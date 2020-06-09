@@ -49,3 +49,20 @@ func CreateSecret(projectID string, payload []byte) (*secretmanagerpb.SecretVers
 	}
 	return version, err
 }
+
+func SecretExists(secretId string, projectId string) bool {
+	ctx := context.Background()
+	client, err := secretmanager.NewClient(ctx)
+	if err != nil {
+		log.Fatalf("failed to setup client: %v", err)
+	}
+	accessRequest := &secretmanagerpb.GetSecretRequest{Name: secretId}
+	result, err := client.GetSecret(ctx, accessRequest)
+	if err != nil {
+		log.Fatalf("failed to access secret version: %v", err)
+		return false
+	}
+	log.Printf("Plaintext: %s", result.GetName())
+	return true
+
+}
