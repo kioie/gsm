@@ -57,12 +57,9 @@ func SecretExists(secretId string, projectId string) bool {
 		log.Fatalf("failed to setup client: %v", err)
 	}
 	accessRequest := &secretmanagerpb.GetSecretRequest{Name: secretId}
-	result, err := client.GetSecret(ctx, accessRequest)
+	_, err = client.GetSecret(ctx, accessRequest)
 	if err != nil {
-		log.Fatalf("failed to access secret version: %v", err)
 		return false
 	}
-	log.Printf("Plaintext: %s", result.GetName())
 	return true
-
 }
