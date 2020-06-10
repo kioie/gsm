@@ -102,8 +102,20 @@ func SecretExists(secretId string) bool {
 	return true
 }
 
-func ListSecrets()      {}
-func AddSecretVersion() {}
+func ListSecrets() {}
+func AddNewSecretVersion(secretName string, projectID string, payload []byte) *secretmanagerpb.SecretVersion {
+	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
+		Parent: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
+		Payload: &secretmanagerpb.SecretPayload{
+			Data: payload,
+		},
+	}
+	version, err := client.AddSecretVersion(ctx, addSecretVersionReq)
+	if err != nil {
+		log.Fatalf("failed to add secret version: %v", err)
+	}
+	return version
+}
 func GetSecret(secretName string, version string, projectID string) *secretmanagerpb.AccessSecretVersionResponse {
 	if version == "" {
 		version = "latest"
