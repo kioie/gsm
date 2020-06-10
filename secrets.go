@@ -110,7 +110,7 @@ func ListSecrets(projectID string) *secretmanager.SecretIterator {
 	return results
 }
 
-func AddNewSecretVersion(secretName string, projectID string, payload []byte) *secretmanagerpb.SecretVersion {
+func AddNewSecretVersion(projectID string, secretName string, payload []byte) *secretmanagerpb.SecretVersion {
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
 		Parent: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
 		Payload: &secretmanagerpb.SecretPayload{
@@ -123,7 +123,7 @@ func AddNewSecretVersion(secretName string, projectID string, payload []byte) *s
 	}
 	return version
 }
-func GetSecret(secretName string, version string, projectID string) *secretmanagerpb.SecretPayload {
+func GetSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretPayload {
 	if version == "" {
 		version = "latest"
 	}
@@ -138,7 +138,7 @@ func GetSecret(secretName string, version string, projectID string) *secretmanag
 }
 func UpdateSecret() {
 }
-func DeleteSecret(secretName string, projectID string) {
+func DeleteSecret(projectID string, secretName string) {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
 	}
@@ -148,17 +148,27 @@ func DeleteSecret(secretName string, projectID string) {
 	}
 }
 func ListSecretVersions() {}
-func GetSecretMetadata(secretName string, version string, projectID string) *secretmanagerpb.SecretVersion {
-	getSecret := &secretmanagerpb.GetSecretVersionRequest{
+func GetSecretMetadata(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
 	}
-	result, err := client.GetSecretVersion(ctx, getSecret)
+	result, err := client.GetSecretVersion(ctx, getSecretReq)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
-func AccessSecretVersion()  {}
-func DisableSecretVersion() {}
+func AccessSecretVersion() {}
+func DisableSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+	disableSecretReq := &secretmanagerpb.DisableSecretVersionRequest{
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+	}
+	result, err := client.DisableSecretVersion(ctx, disableSecretReq)
+	if err != nil {
+		log.Fatalf("failed to get secret: %v", err)
+	}
+	return result
+}
+
 func EnableSecretVersion()  {}
 func DestroySecretVersion() {}
