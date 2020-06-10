@@ -8,13 +8,19 @@ import (
 	"log"
 )
 
-func CreateSecret(projectID string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
-	// Create the client.
+var ctx = context.Background()
+var client = Connect()
+
+func Connect() *secretmanager.Client {
 	ctx := context.Background()
-	client, err := secretmanager.NewClient(ctx)
+	newClient, err := secretmanager.NewClient(ctx)
 	if err != nil {
 		log.Fatalf("failed to setup client: %v", err)
 	}
+	return newClient
+}
+
+func CreateSecret(projectID string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 
 	// Create the request to create the secret.
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
@@ -88,26 +94,17 @@ func CreateNewSecretVersion(projectID string, payload []byte) (*secretmanagerpb.
 }
 
 func SecretExists(secretId string) bool {
-	ctx := context.Background()
-	client, err := secretmanager.NewClient(ctx)
-	if err != nil {
-		log.Fatalf("failed to setup client: %v", err)
-	}
 	accessRequest := &secretmanagerpb.GetSecretRequest{Name: secretId}
-	_, err = client.GetSecret(ctx, accessRequest)
+	_, err := client.GetSecret(ctx, accessRequest)
 	if err != nil {
 		return false
 	}
 	return true
 }
+
 func ListSecrets()      {}
 func AddSecretVersion() {}
 func GetSecret(secretName string, version string, projectID string) *secretmanagerpb.AccessSecretVersionResponse {
-	ctx := context.Background()
-	client, err := secretmanager.NewClient(ctx)
-	if err != nil {
-		log.Fatalf("failed to setup client: %v", err)
-	}
 	if version == "" {
 		version = "latest"
 	}
