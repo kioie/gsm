@@ -102,7 +102,14 @@ func SecretExists(secretId string) bool {
 	return true
 }
 
-func ListSecrets() {}
+func ListSecrets(projectID string) *secretmanager.SecretIterator {
+	listSecretsReq := &secretmanagerpb.ListSecretsRequest{
+		Parent: fmt.Sprintf("projects/%v", projectID),
+	}
+	results := client.ListSecrets(ctx, listSecretsReq)
+	return results
+}
+
 func AddNewSecretVersion(secretName string, projectID string, payload []byte) *secretmanagerpb.SecretVersion {
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
 		Parent: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
@@ -120,16 +127,18 @@ func GetSecret(secretName string, version string, projectID string) *secretmanag
 	if version == "" {
 		version = "latest"
 	}
-	accessRequest := &secretmanagerpb.AccessSecretVersionRequest{
+	getSecret := &secretmanagerpb.AccessSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
 	}
-	result, err := client.AccessSecretVersion(ctx, accessRequest)
+	result, err := client.AccessSecretVersion(ctx, getSecret)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
-func UpdateSecret()         {}
+func UpdateSecret() {
+
+}
 func DeleteSecret()         {}
 func ListSecretVersions()   {}
 func GetSecretVersion()     {}
