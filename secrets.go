@@ -137,9 +137,16 @@ func GetSecret(secretName string, version string, projectID string) *secretmanag
 	return result
 }
 func UpdateSecret() {
-
 }
-func DeleteSecret()         {}
+func DeleteSecret(secretName string, projectID string) {
+	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
+		Name: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
+	}
+	err := client.DeleteSecret(ctx, deleteSecretReq)
+	if err != nil {
+		log.Fatalf("failed to delete secret: %v", err)
+	}
+}
 func ListSecretVersions()   {}
 func GetSecretVersion()     {}
 func AccessSecretVersion()  {}
