@@ -170,7 +170,7 @@ func DisableSecret(projectID string, secretName string, version string) *secretm
 	return result
 }
 
-func EnableSecretVersion(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+func EnableSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
 	enableSecretReq := &secretmanagerpb.EnableSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
 	}
@@ -180,4 +180,13 @@ func EnableSecretVersion(projectID string, secretName string, version string) *s
 	}
 	return result
 }
-func DestroySecretVersion() {}
+func DestroySecret(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+	destroySecretReq := &secretmanagerpb.DestroySecretVersionRequest{
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+	}
+	result, err := client.DestroySecretVersion(ctx, destroySecretReq)
+	if err != nil {
+		log.Fatalf("failed to get secret: %v", err)
+	}
+	return result
+}
