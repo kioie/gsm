@@ -19,6 +19,6 @@ func main() {
 	//	fmt.Println(newResult)
 	//	result2 := gcp_secret_manager.GetSecret("my-secret", "1", projectID)
 	//fmt.Println(result2.Payload)
-	list := gcp_secret_manager.ListSecrets(projectID)
-	fmt.Println(list)
+	result3 := gcp_secret_manager.GetSecretMetadata("my-secret", "1", projectID)
+	fmt.Println(result3.GetName())
 }

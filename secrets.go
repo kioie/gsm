@@ -123,7 +123,7 @@ func AddNewSecretVersion(secretName string, projectID string, payload []byte) *s
 	}
 	return version
 }
-func GetSecret(secretName string, version string, projectID string) *secretmanagerpb.AccessSecretVersionResponse {
+func GetSecret(secretName string, version string, projectID string) *secretmanagerpb.SecretPayload {
 	if version == "" {
 		version = "latest"
 	}
@@ -134,7 +134,7 @@ func GetSecret(secretName string, version string, projectID string) *secretmanag
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
-	return result
+	return result.Payload
 }
 func UpdateSecret() {
 }
@@ -147,8 +147,17 @@ func DeleteSecret(secretName string, projectID string) {
 		log.Fatalf("failed to delete secret: %v", err)
 	}
 }
-func ListSecretVersions()   {}
-func GetSecretVersion()     {}
+func ListSecretVersions() {}
+func GetSecretMetadata(secretName string, version string, projectID string) *secretmanagerpb.SecretVersion {
+	getSecret := &secretmanagerpb.GetSecretVersionRequest{
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+	}
+	result, err := client.GetSecretVersion(ctx, getSecret)
+	if err != nil {
+		log.Fatalf("failed to get secret: %v", err)
+	}
+	return result
+}
 func AccessSecretVersion()  {}
 func DisableSecretVersion() {}
 func EnableSecretVersion()  {}
