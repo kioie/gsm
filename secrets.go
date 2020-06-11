@@ -170,6 +170,18 @@ func DeleteSecret(projectID string, secretName string) {
 		log.Fatalf("failed to delete secret: %v", err)
 	}
 }
+
+func DeleteSecretVersion(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+	destroySecretReq := &secretmanagerpb.DestroySecretVersionRequest{
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+	}
+	result, err := client.DestroySecretVersion(ctx, destroySecretReq)
+	if err != nil {
+		log.Fatalf("failed to get secret: %v", err)
+	}
+	return result
+}
+
 func ListSecretVersions() {}
 func GetSecretMetadata(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
 	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{
