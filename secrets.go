@@ -20,9 +20,32 @@ func Connect() *secretmanager.Client {
 	return newClient
 }
 
-func CreateSecret(projectID string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
+func CreateEmptySecret(projectID string, secretName string, ) *secretmanagerpb.Secret {
+	if SecretExists(projectID, secretName) == true {
+		log.Fatalf("failed to create secret as secret already exists")
+	}
+	createSecretReq := &secretmanagerpb.CreateSecretRequest{
+		Parent:   fmt.Sprintf("projects/%s", projectID),
+		SecretId: secretName,
+		Secret: &secretmanagerpb.Secret{
+			Replication: &secretmanagerpb.Replication{
+				Replication: &secretmanagerpb.Replication_Automatic_{
+					Automatic: &secretmanagerpb.Replication_Automatic{},
+				},
+			},
+		},
+	}
+	secret, err := client.CreateSecret(ctx, createSecretReq)
+	if err != nil {
+		log.Fatalf("failed to create secret: %v", err)
+	}
+	return secret
+}
 
-	// Create the request to create the secret.
+func CreateSecretWithData(projectID string, secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
+	if SecretExists(projectID, secretName) == true {
+		log.Fatalf("failed to create secret as secret already exists")
+	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
 		Parent:   fmt.Sprintf("projects/%s", projectID),
 		SecretId: "my-secret",
