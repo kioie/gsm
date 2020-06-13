@@ -50,6 +50,22 @@ func TestAddNewSecretVersion(t *testing.T) {
 }
 
 func TestCreateEmptySecret(t *testing.T) {
+	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
+		return &secretmanagerpb.Secret{
+			Name:        "nil",
+			Replication: nil,
+			CreateTime:  nil,
+			Labels:      nil,
+		}, errors.New("Secret does not exist")
+	}
+	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
+		return &secretmanagerpb.Secret{
+			Name:        "projects/myProject/secrets/mySecrets",
+			Replication: nil,
+			CreateTime:  nil,
+			Labels:      nil,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -59,7 +75,17 @@ func TestCreateEmptySecret(t *testing.T) {
 		args args
 		want *secretmanagerpb.Secret
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProject",
+				secretName: "mySecret",
+			},
+			want: &secretmanagerpb.Secret{
+				Name:        "projects/myProject/secrets/mySecrets",
+				Replication: nil,
+				CreateTime:  nil,
+				Labels:      nil,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
