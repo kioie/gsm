@@ -73,7 +73,7 @@ var (
 	CreateSecret         func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error)
 	AddSecretVersion     func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 	DeleteSecret         func(req *secretmanagerpb.DeleteSecretRequest) error
-	ListSecrets          func(req *secretmanagerpb.ListSecretsRequest) *secretmanager.SecretIterator
+//	ListSecrets          func(req *secretmanagerpb.ListSecretsRequest) *secretmanager.SecretIterator
 	GetSecretVersion     func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 	DisableSecretVersion func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 	EnableSecretVersion  func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)

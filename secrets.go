@@ -122,7 +122,7 @@ func GetSecret(secretName string, version string) *secretmanagerpb.SecretPayload
 	return result.Payload
 }
 
-func DeleteSecret(secretName string) {
+func DeleteSecretAndVersions(secretName string) {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectId, secretName),
 	}
