@@ -157,6 +157,40 @@ func TestCreateSecretWithData(t *testing.T) {
 			}
 		})
 	}
+	AddSecretVersionFunc = func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, errors.New("failed to add secret version")
+	}
+	tests1 := []struct {
+		name    string
+		args    args
+		want    *secretmanagerpb.SecretVersion
+		wantErr bool
+	}{
+		{name: "Success",
+			args: args{
+				projectID:  "myProject",
+				secretName: "mySecret",
+				payload:    []byte("a new test"),
+			}, want: nil,wantErr: true},
+	}
+	for _, tt := range tests1 {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := CreateSecretWithData(tt.args.secretName, tt.args.payload)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateSecretWithData() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("CreateSecretWithData() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
 		return &secretmanagerpb.Secret{
 			Name:        "projects/myProjects/secrets/mySecrets",
