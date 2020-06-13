@@ -97,6 +97,30 @@ func TestCreateEmptySecret(t *testing.T) {
 }
 
 func TestCreateSecretWithData(t *testing.T) {
+	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
+		return &secretmanagerpb.Secret{
+			Name:        "nil",
+			Replication: nil,
+			CreateTime:  nil,
+			Labels:      nil,
+		}, errors.New("Secret does not exist")
+	}
+	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
+		return &secretmanagerpb.Secret{
+			Name:        "projects/myProject/secrets/mySecrets",
+			Replication: nil,
+			CreateTime:  nil,
+			Labels:      nil,
+		}, nil
+	}
+	AddSecretVersionFunc = func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProject/secrets/secrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -108,7 +132,17 @@ func TestCreateSecretWithData(t *testing.T) {
 		want    *secretmanagerpb.SecretVersion
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProject",
+				secretName: "mySecret",
+				payload:    []byte("a new test"),
+			}, want: &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProject/secrets/secrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
