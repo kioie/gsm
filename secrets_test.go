@@ -13,9 +13,16 @@ func init() {
 }
 
 func TestAddNewSecretVersion(t *testing.T) {
+	AddSecretVersionFunc = func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProject/secrets/mySecrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 
 	type args struct {
-		projectID  string
 		secretName string
 		payload    []byte
 	}
@@ -24,7 +31,14 @@ func TestAddNewSecretVersion(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretVersion
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{secretName: "mysecret", payload: []byte("a new test")},
+			want: &secretmanagerpb.SecretVersion{
+				Name:        "projects/myProject/secrets/mySecrets/versions/1",
+				CreateTime:  nil,
+				DestroyTime: nil,
+				State:       0,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -84,7 +98,7 @@ func TestCreateSecretWithData(t *testing.T) {
 	}
 }
 
-func TestDeleteSecret(t *testing.T) {
+func TestDeleteSecretWithVersions(t *testing.T) {
 	type args struct {
 		projectID  string
 		secretName string
@@ -195,6 +209,7 @@ func TestGetSecretMetadata(t *testing.T) {
 		secretName string
 		version    string
 	}
+
 	tests := []struct {
 		name string
 		args args
@@ -245,12 +260,11 @@ func TestListSecrets(t *testing.T) {
 
 func TestSecretExists(t *testing.T) {
 	type args struct {
-		projectID  string
 		secretName string
 	}
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
 		return &secretmanagerpb.Secret{
-			Name:        "projects/secret-manager-test/secrets/my-secret",
+			Name:        "projects/myProject/secrets/my-secret",
 			Replication: nil,
 			CreateTime:  nil,
 			Labels:      nil,
@@ -261,8 +275,8 @@ func TestSecretExists(t *testing.T) {
 		args args
 		want bool
 	}{
-		{name: "success",
-			args: args{projectID: "secret-manager-test", secretName: "my-secret"},
+		{name: "Success",
+			args: args{secretName: "my-secret"},
 			want: true},
 	}
 
@@ -287,13 +301,14 @@ func TestSecretExists(t *testing.T) {
 		args args
 		want bool
 	}{
-		{name: "failure",
-			args: args{projectID: "secret-manager-test", secretName: "mysecret"},
+		{name: "Failure",
+			args: args{secretName: "mysecret"},
 			want: false},
 	}
 
 	for _, tt := range tests2 {
 		t.Run(tt.name, func(t *testing.T) {
+
 			if got := SecretExists(tt.args.secretName); got != tt.want {
 				t.Errorf("SecretExists() = %v, want %v", got, tt.want)
 			}
