@@ -121,14 +121,15 @@ func GetSecret(secretName string, version string) *secretmanagerpb.SecretPayload
 	return result.Payload
 }
 
-func DeleteSecretAndVersions(secretName string) {
+func DeleteSecretAndVersions(secretName string) error {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectID, secretName),
 	}
 	err := Client.DeleteSecret(deleteSecretReq)
-	if err != nil {
-		log.Fatalf("failed to delete secret: %v", err)
+	if err == nil {
+		log.Fatalf("Secret Deleted Successfully")
 	}
+	return err
 }
 
 func DeleteSecretVersion(secretName string, version string) *secretmanagerpb.SecretVersion {

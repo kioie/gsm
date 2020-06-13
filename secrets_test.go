@@ -158,24 +158,10 @@ func TestCreateSecretWithData(t *testing.T) {
 	}
 }
 
-func TestDeleteSecretWithVersions(t *testing.T) {
-	type args struct {
-		projectID  string
-		secretName string
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-		})
-	}
-}
+
 
 func TestDeleteSecretVersion(t *testing.T) {
+
 	type args struct {
 		projectID  string
 		secretName string
@@ -375,4 +361,29 @@ func TestSecretExists(t *testing.T) {
 		})
 	}
 
+}
+
+func TestDeleteSecretAndVersions(t *testing.T) {
+	DeleteSecretFunc = func(req *secretmanagerpb.DeleteSecretRequest) error {
+		return errors.New("Delete failed")
+	}
+	type args struct {
+		secretName string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{name: "Failure",
+			args:    args{secretName: "mySecret"},
+			wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := DeleteSecretAndVersions(tt.args.secretName); (err != nil) != tt.wantErr {
+				t.Errorf("DeleteSecretAndVersions() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
 }
