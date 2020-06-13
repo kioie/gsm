@@ -56,7 +56,17 @@ func (m *MockClient) Close() error {
 
 var (
 	// GetSecretFunc fetches the mock client's `GetSecret` func
-	GetSecretFunc func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
+	GetSecretFunc        func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
+	ListSecretVersions   func(req *secretmanagerpb.ListSecretVersionsRequest) SecretListIterator
+	AccessSecretVersion  func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error)
+	DestroySecretVersion func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	CreateSecret         func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error)
+	AddSecretVersion     func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	DeleteSecret         func(req *secretmanagerpb.DeleteSecretRequest) error
+	ListSecrets          func(req *secretmanagerpb.ListSecretsRequest) *secretmanager.SecretIterator
+	GetSecretVersion     func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	DisableSecretVersion func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	EnableSecretVersion  func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 )
 
 func (m *MockClient) GetSecret(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {

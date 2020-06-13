@@ -8,6 +8,10 @@ import (
 	"testing"
 )
 
+func init() {
+	Client = &MockClient{}
+}
+
 func TestAddNewSecretVersion(t *testing.T) {
 
 	type args struct {
@@ -237,9 +241,6 @@ func TestListSecrets(t *testing.T) {
 			}
 		})
 	}
-}
-func init() {
-	Client = &MockClient{}
 }
 
 func TestSecretExists(t *testing.T) {
