@@ -8,34 +8,26 @@ import (
 	"log"
 )
 
-var ctx = context.Background()
 var (
-	Client *secretmanager.Client
+	Client    SecretClient
+	ProjectId string
 )
 
 func init() {
-	var err error
-	Client, err = secretmanager.NewClient(ctx)
+	var ctx = context.Background()
+	c, err := secretmanager.NewClient(ctx)
 	if err != nil {
 		log.Fatalf("failed to setup client: %v", err)
 	}
+	Client = &secretClientImpl{client: c, ctx: ctx}
 }
 
-func Connect() *secretmanager.Client {
-	ctx := context.Background()
-	newClient, err := secretmanager.NewClient(ctx)
-	if err != nil {
-		log.Fatalf("failed to setup client: %v", err)
-	}
-	return newClient
-}
-
-func CreateEmptySecret(projectID string, secretName string, ) *secretmanagerpb.Secret {
-	if SecretExists(projectID, secretName) == true {
+func CreateEmptySecret(secretName string, ) *secretmanagerpb.Secret {
+	if SecretExists(secretName) == true {
 		log.Fatalf("failed to create secret as secret already exists")
 	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
-		Parent:   fmt.Sprintf("projects/%s", projectID),
+		Parent:   fmt.Sprintf("projects/%s", ProjectId),
 		SecretId: secretName,
 		Secret: &secretmanagerpb.Secret{
 			Replication: &secretmanagerpb.Replication{
@@ -45,19 +37,19 @@ func CreateEmptySecret(projectID string, secretName string, ) *secretmanagerpb.S
 			},
 		},
 	}
-	secret, err := Client.CreateSecret(ctx, createSecretReq)
+	secret, err := Client.CreateSecret(createSecretReq)
 	if err != nil {
 		log.Fatalf("failed to create secret: %v", err)
 	}
 	return secret
 }
 
-func CreateSecretWithData(projectID string, secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
-	if SecretExists(projectID, secretName) == true {
+func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
+	if SecretExists(secretName) == true {
 		log.Fatalf("failed to create secret as secret already exists")
 	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
-		Parent:   fmt.Sprintf("projects/%s", projectID),
+		Parent:   fmt.Sprintf("projects/%s", ProjectId),
 		SecretId: secretName,
 		Secret: &secretmanagerpb.Secret{
 			Replication: &secretmanagerpb.Replication{
@@ -67,7 +59,7 @@ func CreateSecretWithData(projectID string, secretName string, payload []byte) (
 			},
 		},
 	}
-	secret, err := Client.CreateSecret(ctx, createSecretReq)
+	secret, err := Client.CreateSecret(createSecretReq)
 	if err != nil {
 		log.Fatalf("failed to create secret: %v", err)
 	}
@@ -77,115 +69,111 @@ func CreateSecretWithData(projectID string, secretName string, payload []byte) (
 			Data: payload,
 		},
 	}
-	version, err := Client.AddSecretVersion(ctx, addSecretVersionReq)
+	version, err := Client.AddSecretVersion(addSecretVersionReq)
 	if err != nil {
 		log.Fatalf("failed to add secret version: %v", err)
 	}
 	return version, err
 }
 
-func SecretExists(projectID string, secretName string, ) bool {
+func SecretExists(secretName string, ) bool {
 	accessRequest := &secretmanagerpb.GetSecretRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName)}
-	_, err := Client.GetSecret(ctx, accessRequest)
+		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectId, secretName)}
+	_, err := Client.GetSecret(accessRequest)
 	if err != nil {
-		//log.Fatalf("failed to check if secret exists: %v", err)
+
 		return false
 	}
 	return true
 }
 
-func ListSecrets(projectID string) *secretmanager.SecretIterator {
+func ListSecrets() *secretmanager.SecretIterator {
 	listSecretsReq := &secretmanagerpb.ListSecretsRequest{
-		Parent: fmt.Sprintf("projects/%v", projectID),
+		Parent: fmt.Sprintf("projects/%v", ProjectId),
 	}
-	results := Client.ListSecrets(ctx, listSecretsReq)
+	results := Client.ListSecrets(listSecretsReq)
 	return results
 }
 
-func AddNewSecretVersion(projectID string, secretName string, payload []byte) *secretmanagerpb.SecretVersion {
+func AddNewSecretVersion(secretName string, payload []byte) *secretmanagerpb.SecretVersion {
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
-		Parent: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
+		Parent: fmt.Sprintf("projects/%v/secrets/%v", ProjectId, secretName),
 		Payload: &secretmanagerpb.SecretPayload{
 			Data: payload,
 		},
 	}
-	version, err := Client.AddSecretVersion(ctx, addSecretVersionReq)
+	version, err := Client.AddSecretVersion(addSecretVersionReq)
 	if err != nil {
 		log.Fatalf("failed to add secret version: %v", err)
 	}
 	return version
 }
-func GetSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretPayload {
+func GetSecret(secretName string, version string) *secretmanagerpb.SecretPayload {
 	if version == "" {
 		version = "latest"
 	}
 	getSecret := &secretmanagerpb.AccessSecretVersionRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectId, secretName, version),
 	}
-	result, err := Client.AccessSecretVersion(ctx, getSecret)
+	result, err := Client.AccessSecretVersion(getSecret)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result.Payload
 }
 
-func DeleteSecret(projectID string, secretName string) {
+func DeleteSecret(secretName string) {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v", projectID, secretName),
+		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectId, secretName),
 	}
-	err := Client.DeleteSecret(ctx, deleteSecretReq)
+	err := Client.DeleteSecret(deleteSecretReq)
 	if err != nil {
 		log.Fatalf("failed to delete secret: %v", err)
 	}
 }
 
-func DeleteSecretVersion(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+func DeleteSecretVersion(secretName string, version string) *secretmanagerpb.SecretVersion {
 	destroySecretReq := &secretmanagerpb.DestroySecretVersionRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectId, secretName, version),
 	}
-	result, err := Client.DestroySecretVersion(ctx, destroySecretReq)
+	result, err := Client.DestroySecretVersion(destroySecretReq)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
 
-func ListSecretVersions() {}
-func GetSecretMetadata(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+//func ListSecretVersions() {}
+
+func GetSecretMetadata(secretName string, version string) *secretmanagerpb.SecretVersion {
 	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectId, secretName, version),
 	}
-	result, err := Client.GetSecretVersion(ctx, getSecretReq)
+	result, err := Client.GetSecretVersion(getSecretReq)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
 
-func AccessSecretVersion() {
-
-}
-
-func DisableSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+func DisableSecret(secretName string, version string) *secretmanagerpb.SecretVersion {
 	disableSecretReq := &secretmanagerpb.DisableSecretVersionRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectId, secretName, version),
 	}
-	result, err := Client.DisableSecretVersion(ctx, disableSecretReq)
+	result, err := Client.DisableSecretVersion(disableSecretReq)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
 
-func EnableSecret(projectID string, secretName string, version string) *secretmanagerpb.SecretVersion {
+func EnableSecret(secretName string, version string) *secretmanagerpb.SecretVersion {
 	enableSecretReq := &secretmanagerpb.EnableSecretVersionRequest{
-		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", projectID, secretName, version),
+		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectId, secretName, version),
 	}
-	result, err := Client.EnableSecretVersion(ctx, enableSecretReq)
+	result, err := Client.EnableSecretVersion(enableSecretReq)
 	if err != nil {
 		log.Fatalf("failed to get secret: %v", err)
 	}
 	return result
 }
-
