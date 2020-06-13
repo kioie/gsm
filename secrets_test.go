@@ -228,6 +228,12 @@ func TestEnableSecret(t *testing.T) {
 }
 
 func TestGetSecret(t *testing.T) {
+	AccessSecretVersionFunc = func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
+		return &secretmanagerpb.AccessSecretVersionResponse{
+			Name:    "projects/myProjects/secrets/mySecrets/versions/latest",
+			Payload: &secretmanagerpb.SecretPayload{Data: []byte("mySecret")},
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -238,7 +244,13 @@ func TestGetSecret(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretPayload
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProject",
+				secretName: "mySecret",
+				version:    "",
+			},
+			want: &secretmanagerpb.SecretPayload{Data: []byte("mySecret")}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -250,6 +262,14 @@ func TestGetSecret(t *testing.T) {
 }
 
 func TestGetSecretMetadata(t *testing.T) {
+	GetSecretVersionFunc = func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProject/secrets/mySecrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -261,25 +281,24 @@ func TestGetSecretMetadata(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretVersion
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProject",
+				secretName: "mySecrets",
+				version:    "1",
+			},
+			want: &secretmanagerpb.SecretVersion{
+				Name:        "projects/myProject/secrets/mySecrets/versions/1",
+				CreateTime:  nil,
+				DestroyTime: nil,
+				State:       0,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetSecretMetadata(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetSecretMetadata() = %v, want %v", got, tt.want)
 			}
-		})
-	}
-}
-
-func TestListSecretVersions(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
 		})
 	}
 }
