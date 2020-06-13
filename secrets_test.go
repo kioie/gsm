@@ -161,7 +161,14 @@ func TestCreateSecretWithData(t *testing.T) {
 
 
 func TestDeleteSecretVersion(t *testing.T) {
-
+	DestroySecretVersionFunc = func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -172,7 +179,18 @@ func TestDeleteSecretVersion(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretVersion
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProjects",
+				secretName: "mySecrets",
+				version:    "",
+			},
+			want: &secretmanagerpb.SecretVersion{
+				Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+				CreateTime:  nil,
+				DestroyTime: nil,
+				State:       0,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -184,6 +202,14 @@ func TestDeleteSecretVersion(t *testing.T) {
 }
 
 func TestDisableSecret(t *testing.T) {
+	DisableSecretVersionFunc = func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -194,7 +220,18 @@ func TestDisableSecret(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretVersion
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "myProjects",
+				secretName: "mySecrets",
+				version:    "1",
+			},
+			want: &secretmanagerpb.SecretVersion{
+				Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+				CreateTime:  nil,
+				DestroyTime: nil,
+				State:       0,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
