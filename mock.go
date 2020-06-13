@@ -7,47 +7,57 @@ import (
 
 // MockClient is the mock client
 type MockClient struct {
-	GetSecretFunc func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
+	GetSecretFunc            func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
+	ListSecretVersionsFunc   func(req *secretmanagerpb.ListSecretVersionsRequest) SecretListIterator
+	AccessSecretVersionFunc  func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error)
+	DestroySecretVersionFunc func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	CreateSecretFunc         func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error)
+	AddSecretVersionFunc     func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	DeleteSecretFunc         func(req *secretmanagerpb.DeleteSecretRequest) error
+	ListSecretsFunc          func(req *secretmanagerpb.ListSecretsRequest) *secretmanager.SecretIterator
+	GetSecretVersionFunc     func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	DisableSecretVersionFunc func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
+	EnableSecretVersionFunc  func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 }
 
 func (m *MockClient) ListSecretVersions(req *secretmanagerpb.ListSecretVersionsRequest) SecretListIterator {
-	panic("implement me")
+	return m.ListSecretVersionsFunc(req)
 }
 
 func (m *MockClient) AccessSecretVersion(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
-	panic("implement me")
+	return m.AccessSecretVersionFunc(req)
 }
 
 func (m *MockClient) DestroySecretVersion(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-	panic("implement me")
+	return m.DestroySecretVersionFunc(req)
 }
 
 func (m *MockClient) CreateSecret(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
-	panic("implement me")
+	return m.CreateSecretFunc(req)
 }
 
 func (m *MockClient) AddSecretVersion(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-	panic("implement me")
+	return m.AddSecretVersionFunc(req)
 }
 
 func (m *MockClient) DeleteSecret(req *secretmanagerpb.DeleteSecretRequest) error {
-	panic("implement me")
+	return m.DeleteSecretFunc(req)
 }
 
 func (m *MockClient) ListSecrets(req *secretmanagerpb.ListSecretsRequest) *secretmanager.SecretIterator {
-	panic("implement me")
+	return m.ListSecretsFunc(req)
 }
 
 func (m *MockClient) GetSecretVersion(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-	panic("implement me")
+	return m.GetSecretVersionFunc(req)
 }
 
 func (m *MockClient) DisableSecretVersion(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-	panic("implement me")
+	return m.DisableSecretVersionFunc(req)
 }
 
 func (m *MockClient) EnableSecretVersion(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-	panic("implement me")
+	return m.EnableSecretVersionFunc(req)
 }
 
 func (m *MockClient) Close() error {
@@ -70,5 +80,5 @@ var (
 )
 
 func (m *MockClient) GetSecret(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-	return GetSecretFunc(req)
+	return m.GetSecretFunc(req)
 }
