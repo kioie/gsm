@@ -206,6 +206,14 @@ func TestDisableSecret(t *testing.T) {
 }
 
 func TestEnableSecret(t *testing.T) {
+	EnableSecretVersionFunc = func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
+		return &secretmanagerpb.SecretVersion{
+			Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+			CreateTime:  nil,
+			DestroyTime: nil,
+			State:       0,
+		}, nil
+	}
 	type args struct {
 		projectID  string
 		secretName string
@@ -216,7 +224,18 @@ func TestEnableSecret(t *testing.T) {
 		args args
 		want *secretmanagerpb.SecretVersion
 	}{
-		// TODO: Add test cases.
+		{name: "Success",
+			args: args{
+				projectID:  "",
+				secretName: "",
+				version:    "",
+			},
+			want: &secretmanagerpb.SecretVersion{
+				Name:        "projects/myProjects/secrets/mySecrets/versions/1",
+				CreateTime:  nil,
+				DestroyTime: nil,
+				State:       0,
+			}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
