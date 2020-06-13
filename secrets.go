@@ -3,6 +3,7 @@ package gcp_secret_manager
 import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"context"
+	"errors"
 	"fmt"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"log"
@@ -21,10 +22,11 @@ func init() {
 	}
 	Client = &secretClientImpl{client: c, ctx: ctx}
 }
-
 func CreateEmptySecret(secretName string) *secretmanagerpb.Secret {
 	if SecretExists(secretName) == true {
-		log.Fatalf("failed to create secret as secret already exists")
+		//log.Fatalf("failed to create secret as secret already exists")
+		log.Println("failed to create secret as secret already exists")
+		return nil
 	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
 		Parent:   fmt.Sprintf("projects/%s", ProjectID),
@@ -43,10 +45,10 @@ func CreateEmptySecret(secretName string) *secretmanagerpb.Secret {
 	}
 	return secret
 }
-
 func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	if SecretExists(secretName) == true {
-		log.Fatalf("failed to create secret as secret already exists")
+		log.Println("failed to create secret as secret already exists")
+		return nil, errors.New("failed to create secret as secret already exists")
 	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
 		Parent:   fmt.Sprintf("projects/%s", ProjectID),
@@ -61,7 +63,8 @@ func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.S
 	}
 	secret, err := Client.CreateSecret(createSecretReq)
 	if err != nil {
-		log.Fatalf("failed to create secret: %v", err)
+		log.Printf("failed to create secret: %v\n", err)
+		return nil, err
 	}
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
 		Parent: secret.Name,
@@ -71,7 +74,8 @@ func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.S
 	}
 	version, err := Client.AddSecretVersion(addSecretVersionReq)
 	if err != nil {
-		log.Fatalf("failed to add secret version: %v", err)
+		log.Printf("failed to add secret version: %v\n", err)
+		return nil, err
 	}
 	return version, err
 }
