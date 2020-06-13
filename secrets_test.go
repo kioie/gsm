@@ -269,8 +269,6 @@ func TestCreateSecretWithData(t *testing.T) {
 	}
 }
 
-
-
 func TestDeleteSecretVersion(t *testing.T) {
 	DestroySecretVersionFunc = func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 		return &secretmanagerpb.SecretVersion{

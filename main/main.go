@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	gcp_secret_manager "github.com/gcp-secret-manager"
+	gcp_secret_manager "github.com/kioie/gcp-secret-manager"
 )
 
 func main() {
-	gcp_secret_manager.ProjectId = "secret-manager-test"
+	gcp_secret_manager.ProjectID = "secret-manager-test"
 	//projectID := "secret-manager-test"
 	//connect :=&gcp_secret_manager.NewClient{}
 	//	if !gcp_secret_manager.SecretExists("projects/1092054168008/secrets/my-secret") {
