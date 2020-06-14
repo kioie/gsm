@@ -30,7 +30,6 @@ jobs:
             dep ensure
         fi
       with:
-      repository: kioie/gcp-secret-manager
       token: ${{ secrets.GITHUBPAT }}
 
 
