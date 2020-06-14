@@ -61,7 +61,7 @@ func (m *MockClient) EnableSecretVersion(req *secretmanagerpb.EnableSecretVersio
 }
 
 func (m *MockClient) Close() error {
-	panic("implement me")
+	return nil
 }
 
 var (
