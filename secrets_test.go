@@ -1,7 +1,6 @@
 package gcp_secret_manager
 
 import (
-	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"errors"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"reflect"
@@ -375,26 +374,6 @@ func TestGetSecretMetadata(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := GetSecretMetadata(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetSecretMetadata() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestListSecrets(t *testing.T) {
-	type args struct {
-		projectID string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *secretmanager.SecretIterator
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := ListSecrets(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("ListSecrets() = %v, want %v", got, tt.want)
 			}
 		})
 	}

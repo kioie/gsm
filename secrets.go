@@ -80,7 +80,7 @@ func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.S
 	return version, err
 }
 
-func SecretExists(secretName string, ) bool {
+func SecretExists(secretName string) bool {
 	accessRequest := &secretmanagerpb.GetSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectID, secretName)}
 	_, err := Client.GetSecret(accessRequest)
@@ -88,14 +88,6 @@ func SecretExists(secretName string, ) bool {
 		return false
 	}
 	return true
-}
-
-func ListSecrets() *secretmanager.SecretIterator {
-	listSecretsReq := &secretmanagerpb.ListSecretsRequest{
-		Parent: fmt.Sprintf("projects/%v", ProjectID),
-	}
-	results := Client.ListSecrets(listSecretsReq)
-	return results
 }
 
 func AddNewSecretVersion(secretName string, payload []byte) *secretmanagerpb.SecretVersion {
@@ -146,8 +138,6 @@ func DeleteSecretVersion(secretName string, version string) *secretmanagerpb.Sec
 	}
 	return result
 }
-
-//func ListSecretVersions() {}
 
 func GetSecretMetadata(secretName string, version string) *secretmanagerpb.SecretVersion {
 	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{

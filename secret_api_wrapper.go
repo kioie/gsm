@@ -18,13 +18,11 @@ type ClientFactory interface {
 // It is entirely for the purpose of being able to mock these for testing.
 type SecretClient interface {
 	AccessSecretVersion(req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error)
-	ListSecretVersions(req *smpb.ListSecretVersionsRequest) SecretListIterator
 	DestroySecretVersion(req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error)
 	CreateSecret(req *smpb.CreateSecretRequest) (*smpb.Secret, error)
 	AddSecretVersion(req *smpb.AddSecretVersionRequest) (*smpb.SecretVersion, error)
 	DeleteSecret(req *smpb.DeleteSecretRequest) error
 	GetSecret(req *smpb.GetSecretRequest) (*smpb.Secret, error)
-	ListSecrets(req *smpb.ListSecretsRequest) *sm.SecretIterator
 	GetSecretVersion(req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error)
 	DisableSecretVersion(req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error)
 	EnableSecretVersion(req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error)
@@ -57,9 +55,7 @@ func (*SecretClientFactoryImpl) NewSecretClient(ctx context.Context) (SecretClie
 func (sc *secretClientImpl) AccessSecretVersion(req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error) {
 	return sc.client.AccessSecretVersion(sc.ctx, req)
 }
-func (sc *secretClientImpl) ListSecretVersions(req *smpb.ListSecretVersionsRequest) SecretListIterator {
-	return sc.client.ListSecretVersions(sc.ctx, req)
-}
+
 func (sc *secretClientImpl) DestroySecretVersion(req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error) {
 	return sc.client.DestroySecretVersion(sc.ctx, req)
 }
@@ -79,10 +75,6 @@ func (sc *secretClientImpl) GetSecret(req *smpb.GetSecretRequest) (*smpb.Secret,
 
 func (sc *secretClientImpl) GetSecretVersion(req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error) {
 	return sc.client.GetSecretVersion(sc.ctx, req)
-}
-
-func (sc *secretClientImpl) ListSecrets(req *smpb.ListSecretsRequest) *sm.SecretIterator {
-	return sc.client.ListSecrets(sc.ctx, req)
 }
 
 func (sc *secretClientImpl) DisableSecretVersion(req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error) {
