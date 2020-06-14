@@ -22,8 +22,7 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
       with:
-        repository: kioie/gcp-secret-manager
-        token: ${{ secrets.GITHUBPAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUBPAT }}
 
     - name: Get dependencies
       run: |
