@@ -18,7 +18,7 @@ func main() {
 	//fmt.Println(result)
 	//	newResult := gcp_secret_manager.AddNewSecretVersion("my-secret", projectID, []byte("a new test"))
 	//	fmt.Println(newResult)
-	result2 := gcp_secret_manager.GetSecret("my-secret", "")
+	result2, _ := gcp_secret_manager.GetSecret("my-secret", "")
 	fmt.Println(result2)
 	//	result3 := gcp_secret_manager.GetSecretMetadata("my-secret", "1", projectID)
 	//	fmt.Println(result3.GetName())
