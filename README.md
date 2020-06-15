@@ -1,4 +1,6 @@
 
+<a href="url"><img src="https://github.com/kioie/gcp-secret-manager/blob/master/.github/Logo.gif" align="center" height="200" width="500" ></a>
+
 ## **Go-GCP-Secret-Manager**
 
 [![codecov](https://codecov.io/gh/kioie/gcp-secret-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/kioie/gcp-secret-manager)
