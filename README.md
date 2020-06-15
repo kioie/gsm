@@ -5,7 +5,7 @@
 
 [![codecov](https://codecov.io/gh/kioie/gcp-secret-manager/branch/master/graph/badge.svg)](https://codecov.io/gh/kioie/gcp-secret-manager)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/kioie/gcp-secret-manager/blob/master/LICENSE)
-
+[![Actions Status](https://github.com/kioie/gcp-secret-manager/workflows/Go/badge.svg)](https://github.com/kioie/gcp-secret-manager/actions)
 
 A simple golang package for reading, writing, deleting, storing and editing secrets on Google Cloud Secret Manager.
 
