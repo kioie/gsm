@@ -1,13 +1,11 @@
 package gcp_secret_manager
 
 import (
-	"context"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 // MockClient is the mock client
 type MockClient struct {
-	NewClientFactoryFunc     func(ctx context.Context) (SecretClient, error)
 	GetSecretFunc            func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
 	AccessSecretVersionFunc  func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error)
 	DestroySecretVersionFunc func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
@@ -19,9 +17,6 @@ type MockClient struct {
 	EnableSecretVersionFunc  func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 }
 
-func (m *MockClient) NewClientFactory(ctx context.Context) (SecretClient, error) {
-	return NewClientFactoryFunc(ctx)
-}
 func (m *MockClient) AccessSecretVersion(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
 	return AccessSecretVersionFunc(req)
 }
@@ -59,7 +54,6 @@ func (m *MockClient) Close() error {
 }
 
 var (
-	NewClientFactoryFunc     func(ctx context.Context) (SecretClient, error)
 	GetSecretFunc            func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error)
 	AccessSecretVersionFunc  func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error)
 	DestroySecretVersionFunc func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error)

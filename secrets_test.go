@@ -1,7 +1,6 @@
 package gcp_secret_manager
 
 import (
-	"context"
 	"errors"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"reflect"
@@ -9,10 +8,7 @@ import (
 )
 
 func init() {
-	NewClientFactoryFunc = func(ctx context.Context) (SecretClient, error) {
-		return nil, nil
-	}
-	Client = &MockClient{}
+	client = &MockClient{}
 }
 
 var secretVersionPositiveReturn = &secretmanagerpb.SecretVersion{
