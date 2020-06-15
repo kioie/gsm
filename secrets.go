@@ -13,14 +13,13 @@ var (
 	client    SecretClient
 	ProjectID string
 )
+var ctx = context.Background()
+var c, _ = secretmanager.NewClient(ctx)
 
 func init() {
-	var ctx = context.Background()
-	c, err := secretmanager.NewClient(ctx)
-	if err != nil {
-		log.Fatalf("failed to setup client: %v", err)
-	}
+
 	client = &secretClientImpl{client: c, ctx: ctx}
+
 }
 func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	if SecretExists(secretName) == true {
