@@ -62,7 +62,7 @@ func main() {
 
 ## Copyright
 
-Copyright (C) 2020 by Eddy Kioi.
+Copyright © 2020 Eddy Kioi.
 
 Go GCP-SECRET-MANAGER package released under Apache License.
 See [LICENSE](https://github.com/kioie/gcp-secret-manager/blob/master/LICENSE) for details.
