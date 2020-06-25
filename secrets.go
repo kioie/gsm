@@ -37,7 +37,7 @@ import (
 
 var (
 	// Api Secret Client
-	client    SecretClient
+	client SecretClient
 	// ProjectID that is used as a global var
 	ProjectID string
 )
@@ -49,6 +49,7 @@ func init() {
 	client = &secretClientImpl{client: c, ctx: ctx}
 
 }
+
 // CreateEmptySecret function
 func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	if SecretExists(secretName) == true {
@@ -73,6 +74,7 @@ func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	}
 	return secret, nil
 }
+
 // CreateSecretWithData creates secret with data
 func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	if SecretExists(secretName) == true {
@@ -108,6 +110,7 @@ func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.S
 	}
 	return version, err
 }
+
 // SecretExists Checks if secret exists
 func SecretExists(secretName string) bool {
 	accessRequest := &secretmanagerpb.GetSecretRequest{
@@ -118,6 +121,7 @@ func SecretExists(secretName string) bool {
 	}
 	return true
 }
+
 // AddNewSecretVersion Adds a new Version of a secret on a secret name
 func AddNewSecretVersion(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
@@ -133,6 +137,7 @@ func AddNewSecretVersion(secretName string, payload []byte) (*secretmanagerpb.Se
 	}
 	return version, nil
 }
+
 // GetSecret Gets secret data
 func GetSecret(secretName string, version string) (*secretmanagerpb.SecretPayload, error) {
 	if version == "" {
@@ -148,6 +153,7 @@ func GetSecret(secretName string, version string) (*secretmanagerpb.SecretPayloa
 	}
 	return result.Payload, nil
 }
+
 // DeleteSecretAndVersions Deletes secret with all the versions included
 func DeleteSecretAndVersions(secretName string) error {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
@@ -159,6 +165,7 @@ func DeleteSecretAndVersions(secretName string) error {
 	}
 	return err
 }
+
 // DeleteSecretVersion Deletes specific version of a secret
 func DeleteSecretVersion(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	destroySecretReq := &secretmanagerpb.DestroySecretVersionRequest{
@@ -171,6 +178,7 @@ func DeleteSecretVersion(secretName string, version string) (*secretmanagerpb.Se
 	}
 	return result, nil
 }
+
 // GetSecretMetadata Gets metadata of a secret Name
 func GetSecretMetadata(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{
@@ -183,6 +191,7 @@ func GetSecretMetadata(secretName string, version string) (*secretmanagerpb.Secr
 	}
 	return result, nil
 }
+
 // DisableSecret Disables secret
 func DisableSecret(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	disableSecretReq := &secretmanagerpb.DisableSecretVersionRequest{
@@ -195,6 +204,7 @@ func DisableSecret(secretName string, version string) (*secretmanagerpb.SecretVe
 	}
 	return result, nil
 }
+
 // EnableSecret Enables secret
 func EnableSecret(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	enableSecretReq := &secretmanagerpb.EnableSecretVersionRequest{
