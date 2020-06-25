@@ -24,7 +24,7 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcp_secret_manager
+package gcpSecretManager
 
 import (
 	"errors"
