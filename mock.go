@@ -24,7 +24,7 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcpSecretManager
+package gcpsecretmanager
 
 import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
