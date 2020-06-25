@@ -1,3 +1,5 @@
+package gcp_secret_manager
+
 /*
  * // Licensed to the Apache Software Foundation (ASF) under one
  * // or more contributor license agreements.  See the NOTICE file
@@ -24,7 +26,6 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcp_secret_manager
 
 import (
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
@@ -55,43 +56,43 @@ type MockClient struct {
 	DisableSecretVersionFunc func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 	EnableSecretVersionFunc  func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error)
 }
-// Mock Get Secret
+// GetSecret Mock Get Secret
 func (m *MockClient) GetSecret(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
 	return GetSecretFunc(req)
 }
-// Mock Access SecretVersion
+// AccessSecretVersion Mock Access SecretVersion
 func (m *MockClient) AccessSecretVersion(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
 	return AccessSecretVersionFunc(req)
 }
-// Mock Destroy Secret Version
+// DestroySecretVersion Mock Destroy Secret Version
 func (m *MockClient) DestroySecretVersion(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return DestroySecretVersionFunc(req)
 }
-// Mock Create Secret Version
+// CreateSecret Mock Create Secret Version
 func (m *MockClient) CreateSecret(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
 	return CreateSecretFunc(req)
 }
-// Mock Add Secret Version
+// AddSecretVersion Mock Add Secret Version
 func (m *MockClient) AddSecretVersion(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return AddSecretVersionFunc(req)
 }
-// Mock Delete Secret
+// DeleteSecret Mock Delete Secret
 func (m *MockClient) DeleteSecret(req *secretmanagerpb.DeleteSecretRequest) error {
 	return DeleteSecretFunc(req)
 }
-// Mock Get Secret Version
+// GetSecretVersion Mock Get Secret Version
 func (m *MockClient) GetSecretVersion(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return GetSecretVersionFunc(req)
 }
-// Mock Disable Secret Version
+// DisableSecretVersion Mock Disable Secret Version
 func (m *MockClient) DisableSecretVersion(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return DisableSecretVersionFunc(req)
 }
-// Mock Enable Secret Version
+// EnableSecretVersion Mock Enable Secret Version
 func (m *MockClient) EnableSecretVersion(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return EnableSecretVersionFunc(req)
 }
-// Mock Close Client
+// Close Mock Close Client
 func (m *MockClient) Close() error {
 	return nil
 }

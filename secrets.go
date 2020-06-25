@@ -1,3 +1,5 @@
+package gcp_secret_manager
+
 /*
  * // Licensed to the Apache Software Foundation (ASF) under one
  * // or more contributor license agreements.  See the NOTICE file
@@ -24,8 +26,6 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcp_secret_manager
-
 import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"context"
@@ -49,7 +49,7 @@ func init() {
 	client = &secretClientImpl{client: c, ctx: ctx}
 
 }
-// Create Empty Secret function
+// CreateEmptySecret function
 func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	if SecretExists(secretName) == true {
 		log.Println("failed to create secret as secret already exists")
@@ -73,7 +73,7 @@ func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	}
 	return secret, nil
 }
-// Create secretName that contains secret data
+// CreateSecretWithData creates secret with data
 func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	if SecretExists(secretName) == true {
 		log.Println("failed to create secret as secret already exists")
@@ -108,7 +108,7 @@ func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.S
 	}
 	return version, err
 }
-// Check if secret exists
+// SecretExists Checks if secret exists
 func SecretExists(secretName string) bool {
 	accessRequest := &secretmanagerpb.GetSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectID, secretName)}
@@ -118,7 +118,7 @@ func SecretExists(secretName string) bool {
 	}
 	return true
 }
-// Add a new Version of a secret on a secret name
+// AddNewSecretVersion Adds a new Version of a secret on a secret name
 func AddNewSecretVersion(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	addSecretVersionReq := &secretmanagerpb.AddSecretVersionRequest{
 		Parent: fmt.Sprintf("projects/%v/secrets/%v", ProjectID, secretName),
@@ -133,7 +133,7 @@ func AddNewSecretVersion(secretName string, payload []byte) (*secretmanagerpb.Se
 	}
 	return version, nil
 }
-// Get secret data
+// GetSecret Gets secret data
 func GetSecret(secretName string, version string) (*secretmanagerpb.SecretPayload, error) {
 	if version == "" {
 		version = "latest"
@@ -148,7 +148,7 @@ func GetSecret(secretName string, version string) (*secretmanagerpb.SecretPayloa
 	}
 	return result.Payload, nil
 }
-// Delete secret with all the version included
+// DeleteSecretAndVersions Deletes secret with all the versions included
 func DeleteSecretAndVersions(secretName string) error {
 	deleteSecretReq := &secretmanagerpb.DeleteSecretRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v", ProjectID, secretName),
@@ -159,7 +159,7 @@ func DeleteSecretAndVersions(secretName string) error {
 	}
 	return err
 }
-// Delete specific version of a secret
+// DeleteSecretVersion Deletes specific version of a secret
 func DeleteSecretVersion(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	destroySecretReq := &secretmanagerpb.DestroySecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectID, secretName, version),
@@ -171,7 +171,7 @@ func DeleteSecretVersion(secretName string, version string) (*secretmanagerpb.Se
 	}
 	return result, nil
 }
-// Get metadata of a secret Name
+// GetSecretMetadata Gets metadata of a secret Name
 func GetSecretMetadata(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	getSecretReq := &secretmanagerpb.GetSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectID, secretName, version),
@@ -183,7 +183,7 @@ func GetSecretMetadata(secretName string, version string) (*secretmanagerpb.Secr
 	}
 	return result, nil
 }
-// Disable secret
+// DisableSecret Disables secret
 func DisableSecret(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	disableSecretReq := &secretmanagerpb.DisableSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectID, secretName, version),
@@ -195,7 +195,7 @@ func DisableSecret(secretName string, version string) (*secretmanagerpb.SecretVe
 	}
 	return result, nil
 }
-// Enable secret
+// EnableSecret Enables secret
 func EnableSecret(secretName string, version string) (*secretmanagerpb.SecretVersion, error) {
 	enableSecretReq := &secretmanagerpb.EnableSecretVersionRequest{
 		Name: fmt.Sprintf("projects/%v/secrets/%v/versions/%v", ProjectID, secretName, version),
