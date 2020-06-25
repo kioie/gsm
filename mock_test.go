@@ -1,5 +1,3 @@
-package gcp_secret_manager
-
 /*
  * // Licensed to the Apache Software Foundation (ASF) under one
  * // or more contributor license agreements.  See the NOTICE file
@@ -26,6 +24,7 @@ package gcp_secret_manager
  * date: 15/06/2020, 14:17
  */
 
+package gcp_secret_manager
 
 import (
 	"errors"
@@ -38,7 +37,7 @@ func TestMockClient_Close(t *testing.T) {
 		return secretVersionPositiveReturn, nil
 	}
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Secret does not exist")
+		return nil, errors.New("secret does not exist")
 	}
 	GetSecretVersionFunc = func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil

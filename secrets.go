@@ -1,5 +1,3 @@
-package gcp_secret_manager
-
 /*
  * // Licensed to the Apache Software Foundation (ASF) under one
  * // or more contributor license agreements.  See the NOTICE file
@@ -25,6 +23,8 @@ package gcp_secret_manager
  * project: gcp-secret-manager
  * date: 15/06/2020, 14:17
  */
+
+package gcp_secret_manager
 
 import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"

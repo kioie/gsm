@@ -1,5 +1,3 @@
-package gcp_secret_manager
-
 /*
  * // Licensed to the Apache Software Foundation (ASF) under one
  * // or more contributor license agreements.  See the NOTICE file
@@ -26,6 +24,7 @@ package gcp_secret_manager
  * date: 15/06/2020, 14:17
  */
 
+package gcp_secret_manager
 
 import (
 	"errors"
@@ -80,7 +79,7 @@ func TestAddNewSecretVersion(t *testing.T) {
 		})
 	}
 	AddSecretVersionFunc = func(req *secretmanagerpb.AddSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-		return nil, errors.New("Failed to add secret version")
+		return nil, errors.New("failed to add secret version")
 	}
 
 	tests = []struct {
@@ -107,7 +106,7 @@ func TestAddNewSecretVersion(t *testing.T) {
 
 func TestCreateEmptySecret(t *testing.T) {
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Secret does not exist")
+		return nil, errors.New("secret does not exist")
 	}
 	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
 		return secretPositiveReturn, nil
@@ -138,7 +137,7 @@ func TestCreateEmptySecret(t *testing.T) {
 		})
 	}
 	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Failed to create Secret")
+		return nil, errors.New("failed to create Secret")
 	}
 	tests = []struct {
 		name    string
@@ -176,7 +175,7 @@ func TestCreateEmptySecret(t *testing.T) {
 
 func TestCreateSecretWithData(t *testing.T) {
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Secret does not exist")
+		return nil, errors.New("secret does not exist")
 	}
 	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
 		return secretPositiveReturn, nil
@@ -276,7 +275,7 @@ func TestCreateSecretWithData(t *testing.T) {
 		})
 	}
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Secret does not exist")
+		return nil, errors.New("secret does not exist")
 	}
 	CreateSecretFunc = func(req *secretmanagerpb.CreateSecretRequest) (*secretmanagerpb.Secret, error) {
 		return nil, errors.New("failed to create secret")
@@ -342,7 +341,7 @@ func TestDeleteSecretVersion(t *testing.T) {
 		})
 	}
 	DestroySecretVersionFunc = func(req *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-		return nil, errors.New("Failed to delete secret version")
+		return nil, errors.New("failed to delete secret version")
 	}
 	tests = []struct {
 		name    string
@@ -400,7 +399,7 @@ func TestDisableSecret(t *testing.T) {
 		})
 	}
 	DisableSecretVersionFunc = func(req *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-		return nil, errors.New("Failed to Disable Secret")
+		return nil, errors.New("failed to Disable Secret")
 	}
 	tests = []struct {
 		name    string
@@ -463,7 +462,7 @@ func TestEnableSecret(t *testing.T) {
 		})
 	}
 	EnableSecretVersionFunc = func(req *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-		return nil, errors.New("Failed to enable Secret")
+		return nil, errors.New("failed to enable Secret")
 	}
 	tests2 := []struct {
 		name    string
@@ -524,7 +523,7 @@ func TestGetSecret(t *testing.T) {
 		})
 	}
 	AccessSecretVersionFunc = func(req *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
-		return nil, errors.New("Failed to get secret")
+		return nil, errors.New("failed to get secret")
 	}
 	tests = []struct {
 		name    string
@@ -582,7 +581,7 @@ func TestGetSecretMetadata(t *testing.T) {
 		})
 	}
 	GetSecretVersionFunc = func(req *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
-		return nil, errors.New("Failed to Get Secret Version")
+		return nil, errors.New("failed to Get Secret Version")
 	}
 	tests = []struct {
 		name    string
@@ -634,7 +633,7 @@ func TestSecretExists(t *testing.T) {
 	}
 
 	GetSecretFunc = func(req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-		return nil, errors.New("Secret not found")
+		return nil, errors.New("secret not found")
 	}
 	tests2 := []struct {
 		name string
@@ -659,7 +658,7 @@ func TestSecretExists(t *testing.T) {
 
 func TestDeleteSecretAndVersions(t *testing.T) {
 	DeleteSecretFunc = func(req *secretmanagerpb.DeleteSecretRequest) error {
-		return errors.New("Delete failed")
+		return errors.New("delete failed")
 	}
 	type args struct {
 		secretName string
