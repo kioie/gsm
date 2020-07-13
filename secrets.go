@@ -29,7 +29,6 @@ package gcpsecretmanager
 import (
 	secretmanager "cloud.google.com/go/secretmanager/apiv1"
 	"context"
-	"errors"
 	"fmt"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"log"
@@ -54,10 +53,6 @@ func init() {
 func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	if SecretExists(secretName) == true {
-		log.Println("failed to create secret as secret already exists")
-		return nil, errors.New("failed to create secret as secret already exists")
-	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
 		Parent:   fmt.Sprintf("projects/%s", ProjectID),
 		SecretId: secretName,
@@ -81,10 +76,6 @@ func CreateEmptySecret(secretName string) (*secretmanagerpb.Secret, error) {
 func CreateSecretWithData(secretName string, payload []byte) (*secretmanagerpb.SecretVersion, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	if SecretExists(secretName) == true {
-		log.Println("failed to create secret as secret already exists")
-		return nil, errors.New("failed to create secret as secret already exists")
-	}
 	createSecretReq := &secretmanagerpb.CreateSecretRequest{
 		Parent:   fmt.Sprintf("projects/%s", ProjectID),
 		SecretId: secretName,
