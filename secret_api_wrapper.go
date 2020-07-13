@@ -43,15 +43,15 @@ type ClientFactory interface {
 // SecretClient is a wrapper around the secretmanager APIs that are used by smcache.
 // It is entirely for the purpose of being able to mock these for testing.
 type SecretClient interface {
-	AccessSecretVersion(req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error)
-	DestroySecretVersion(req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error)
-	CreateSecret(req *smpb.CreateSecretRequest) (*smpb.Secret, error)
-	AddSecretVersion(req *smpb.AddSecretVersionRequest) (*smpb.SecretVersion, error)
-	DeleteSecret(req *smpb.DeleteSecretRequest) error
-	GetSecret(req *smpb.GetSecretRequest) (*smpb.Secret, error)
-	GetSecretVersion(req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error)
-	DisableSecretVersion(req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error)
-	EnableSecretVersion(req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error)
+	AccessSecretVersion(ctx context.Context, req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error)
+	DestroySecretVersion(ctx context.Context, req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error)
+	CreateSecret(ctx context.Context, req *smpb.CreateSecretRequest) (*smpb.Secret, error)
+	AddSecretVersion(ctx context.Context, req *smpb.AddSecretVersionRequest) (*smpb.SecretVersion, error)
+	DeleteSecret(ctx context.Context, req *smpb.DeleteSecretRequest) error
+	GetSecret(ctx context.Context, req *smpb.GetSecretRequest) (*smpb.Secret, error)
+	GetSecretVersion(ctx context.Context, req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error)
+	DisableSecretVersion(ctx context.Context, req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error)
+	EnableSecretVersion(ctx context.Context, req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error)
 	Close() error
 }
 
@@ -62,7 +62,7 @@ type SecretListIterator interface {
 
 type secretClientImpl struct {
 	client *sm.Client
-	ctx    context.Context
+	//ctx    context.Context
 }
 
 // SecretClientFactoryImpl implements ClientFactory for the real GRPC client.
@@ -75,40 +75,40 @@ func (*SecretClientFactoryImpl) NewSecretClient(ctx context.Context) (SecretClie
 		return nil, fmt.Errorf("failed to setup client: %w", err)
 	}
 
-	return &secretClientImpl{client: c, ctx: ctx}, nil
+	return &secretClientImpl{client: c}, nil
 }
 
-func (sc *secretClientImpl) AccessSecretVersion(req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error) {
-	return sc.client.AccessSecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) AccessSecretVersion(ctx context.Context, req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error) {
+	return sc.client.AccessSecretVersion(ctx, req)
 }
 
-func (sc *secretClientImpl) DestroySecretVersion(req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error) {
-	return sc.client.DestroySecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) DestroySecretVersion(ctx context.Context, req *smpb.DestroySecretVersionRequest) (*smpb.SecretVersion, error) {
+	return sc.client.DestroySecretVersion(ctx, req)
 }
-func (sc *secretClientImpl) CreateSecret(req *smpb.CreateSecretRequest) (*smpb.Secret, error) {
-	return sc.client.CreateSecret(sc.ctx, req)
+func (sc *secretClientImpl) CreateSecret(ctx context.Context, req *smpb.CreateSecretRequest) (*smpb.Secret, error) {
+	return sc.client.CreateSecret(ctx, req)
 }
-func (sc *secretClientImpl) AddSecretVersion(req *smpb.AddSecretVersionRequest) (*smpb.SecretVersion, error) {
-	return sc.client.AddSecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) AddSecretVersion(ctx context.Context, req *smpb.AddSecretVersionRequest) (*smpb.SecretVersion, error) {
+	return sc.client.AddSecretVersion(ctx, req)
 }
-func (sc *secretClientImpl) DeleteSecret(req *smpb.DeleteSecretRequest) error {
-	return sc.client.DeleteSecret(sc.ctx, req)
-}
-
-func (sc *secretClientImpl) GetSecret(req *smpb.GetSecretRequest) (*smpb.Secret, error) {
-	return sc.client.GetSecret(sc.ctx, req)
+func (sc *secretClientImpl) DeleteSecret(ctx context.Context, req *smpb.DeleteSecretRequest) error {
+	return sc.client.DeleteSecret(ctx, req)
 }
 
-func (sc *secretClientImpl) GetSecretVersion(req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error) {
-	return sc.client.GetSecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) GetSecret(ctx context.Context, req *smpb.GetSecretRequest) (*smpb.Secret, error) {
+	return sc.client.GetSecret(ctx, req)
 }
 
-func (sc *secretClientImpl) DisableSecretVersion(req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error) {
-	return sc.client.DisableSecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) GetSecretVersion(ctx context.Context, req *smpb.GetSecretVersionRequest) (*smpb.SecretVersion, error) {
+	return sc.client.GetSecretVersion(ctx, req)
 }
 
-func (sc *secretClientImpl) EnableSecretVersion(req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error) {
-	return sc.client.EnableSecretVersion(sc.ctx, req)
+func (sc *secretClientImpl) DisableSecretVersion(ctx context.Context, req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error) {
+	return sc.client.DisableSecretVersion(ctx, req)
+}
+
+func (sc *secretClientImpl) EnableSecretVersion(ctx context.Context, req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error) {
+	return sc.client.EnableSecretVersion(ctx, req)
 }
 
 func (sc *secretClientImpl) Close() error {
