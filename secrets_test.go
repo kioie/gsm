@@ -246,219 +246,90 @@ func TestClient_EnableSecret(t *testing.T) {
 
 }
 
-/*
-func TestGetSecret(t *testing.T) {
+func TestClient_GetSecret(t *testing.T) {
+	getSecretTest := func(ctx context.Context, secretName string, projectId string, version string, want *pb.SecretPayload, wantErr bool) func(t *testing.T) {
+		return func(t *testing.T) {
+			c := &Client{
+				smc: client,
+			}
+			got, err := c.GetSecret(ctx, secretName, projectId, version)
+			if (err != nil) != wantErr {
+				t.Errorf("GetSecret() error = %v, wantErr %v", err, wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("GetSecret() got = %v, want %v", got, want)
+			}
+		}
+	}
+
 	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest) (*pb.AccessSecretVersionResponse, error) {
 		return &pb.AccessSecretVersionResponse{
 			Name:    "projects/myProjects/secrets/mySecrets/versions/latest",
 			Payload: &pb.SecretPayload{Data: []byte("mySecret")},
 		}, nil
 	}
-	type args struct {
-		projectID  string
-		secretName string
-		version    string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *pb.SecretPayload
-		wantErr bool
-	}{
-		{name: "Success",
-			args: args{
-				projectID:  "myProject",
-				secretName: "mySecret",
-				version:    "",
-			},
-			want:    &pb.SecretPayload{Data: []byte("mySecret")},
-			wantErr: false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := GetSecret(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSecret() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	t.Run("Success", getSecretTest(nil, "mySecret", "myProject", "", &pb.SecretPayload{Data: []byte("mySecret")}, false))
+
 	AccessSecretVersionFunc = func(ctx context.Context, req *pb.AccessSecretVersionRequest) (*pb.AccessSecretVersionResponse, error) {
 		return nil, errors.New("failed to get secret")
 	}
-	tests = []struct {
-		name    string
-		args    args
-		want    *pb.SecretPayload
-		wantErr bool
-	}{
-		{name: "Failure",
-			args: args{
-				projectID:  "myProject",
-				secretName: "mySecret",
-				version:    "",
-			},
-			want:    nil,
-			wantErr: true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := GetSecret(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSecret() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	t.Run("Failure", getSecretTest(nil, "mySecret", "myProject", "", nil, true))
+
 }
 
-func TestGetSecretMetadata(t *testing.T) {
+func TestClient_GetSecretMetadata(t *testing.T) {
+
+	getSecretMetadataTest := func(ctx context.Context, secretName string, projectId string, version string, want *pb.SecretVersion, wantErr bool) func(t *testing.T) {
+		return func(t *testing.T) {
+			c := &Client{
+				smc: client,
+			}
+			got, err := c.GetSecretMetadata(ctx, secretName, projectId, version)
+			if (err != nil) != wantErr {
+				t.Errorf("GetSecretMetadata() error = %v, wantErr %v", err, wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, want) {
+				t.Errorf("GetSecretMetadata() got = %v, want %v", got, want)
+			}
+		}
+	}
 	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest) (*pb.SecretVersion, error) {
 		return secretVersionPositiveReturn, nil
 	}
-	type args struct {
-		projectID  string
-		secretName string
-		version    string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *pb.SecretVersion
-		wantErr bool
-	}{
-		{name: "Success",
-			args: args{
-				projectID:  "myProject",
-				secretName: "mySecrets",
-				version:    "1",
-			},
-			want:    secretVersionPositiveReturn,
-			wantErr: false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := GetSecretMetadata(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSecretMetadata() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	t.Run("Success", getSecretMetadataTest(nil, "mySecrets", "myProject", "1", secretVersionPositiveReturn, false))
+
 	GetSecretVersionFunc = func(ctx context.Context, req *pb.GetSecretVersionRequest) (*pb.SecretVersion, error) {
 		return nil, errors.New("failed to Get Secret Version")
 	}
-	tests = []struct {
-		name    string
-		args    args
-		want    *pb.SecretVersion
-		wantErr bool
-	}{
-		{name: "Failure",
-			args: args{
-				projectID:  "myProject",
-				secretName: "mySecrets",
-				version:    "1",
-			},
-			want:    nil,
-			wantErr: true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := GetSecretMetadata(tt.args.secretName, tt.args.version); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSecretMetadata() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestSecretExists(t *testing.T) {
-	type args struct {
-		secretName string
-	}
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
-		return secretPositiveReturn, nil
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{name: "Success",
-			args: args{secretName: "my-secret"},
-			want: true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := SecretExists(tt.args.secretName); got != tt.want {
-				t.Errorf("SecretExists() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-
-	GetSecretFunc = func(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error) {
-		return nil, errors.New("secret not found")
-	}
-	tests2 := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{name: "Failure",
-			args: args{secretName: "mysecret"},
-			want: false},
-	}
-
-	for _, tt := range tests2 {
-		t.Run(tt.name, func(t *testing.T) {
-
-			if got := SecretExists(tt.args.secretName); got != tt.want {
-				t.Errorf("SecretExists() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	t.Run("Failure", getSecretMetadataTest(nil, "mySecrets", "myProject", "1", nil, true))
 
 }
 
-func TestDeleteSecretAndVersions(t *testing.T) {
+func TestClient_DeleteSecretAndVersions(t *testing.T) {
+	deleteSecretAndVersionsTest := func(ctx context.Context, secretName string, projectId string, wantErr bool) func(t *testing.T) {
+		return func(t *testing.T) {
+			c := &Client{
+				smc: client,
+			}
+			if err := c.DeleteSecretAndVersions(ctx, secretName, projectId); (err != nil) != wantErr {
+				t.Errorf("DeleteSecretAndVersions() error = %v, wantErr %v", err, wantErr)
+			}
+		}
+	}
+
 	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest) error {
 		return errors.New("delete failed")
 	}
-	type args struct {
-		secretName string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{name: "Failure",
-			args:    args{secretName: "mySecret"},
-			wantErr: true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := DeleteSecretAndVersions(tt.args.secretName); (err != nil) != tt.wantErr {
-				t.Errorf("DeleteSecretAndVersions() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+	t.Run("Failure", deleteSecretAndVersionsTest(nil, "mySecret", "myProject", true))
+
 	DeleteSecretFunc = func(ctx context.Context, req *pb.DeleteSecretRequest) error {
 		return nil
 	}
-	tests = []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
-		{name: "Success",
-			args:    args{secretName: "mySecret"},
-			wantErr: false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if err := DeleteSecretAndVersions(tt.args.secretName); (err != nil) != tt.wantErr {
-				t.Errorf("DeleteSecretAndVersions() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
+	t.Run("Success", deleteSecretAndVersionsTest(nil, "mySecret", "myProject", false))
+
 }
-*/
 
 func TestClient_SecretExists(t *testing.T) {
 	secretExists := func(ctx context.Context, secretName string, projectId string, want bool) func(t *testing.T) {
