@@ -40,7 +40,7 @@ type ClientFactory interface {
 	NewSecretClient(ctx context.Context) (SecretClient, error)
 }
 
-// SecretClient is a wrapper around the secretmanager APIs that are used by smcache.
+/*// SecretClient is a wrapper around the secretmanager APIs that are used by smcache.
 // It is entirely for the purpose of being able to mock these for testing.
 type SecretClient interface {
 	AccessSecretVersion(ctx context.Context, req *smpb.AccessSecretVersionRequest) (*smpb.AccessSecretVersionResponse, error)
@@ -53,7 +53,7 @@ type SecretClient interface {
 	DisableSecretVersion(ctx context.Context, req *smpb.DisableSecretVersionRequest) (*smpb.SecretVersion, error)
 	EnableSecretVersion(ctx context.Context, req *smpb.EnableSecretVersionRequest) (*smpb.SecretVersion, error)
 	Close() error
-}
+}*/
 
 // SecretListIterator is an interface for the GRPC secret manager response from ListSecretVersions.
 type SecretListIterator interface {
