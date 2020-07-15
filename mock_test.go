@@ -24,13 +24,14 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcpsecretmanager
+package gsm
 
 import (
 	"context"
 	"errors"
-	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"testing"
+	
+	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
 func TestMockClient_Close(t *testing.T) {

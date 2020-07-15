@@ -24,7 +24,7 @@
  * date: 15/06/2020, 14:17
  */
 
-package gcpsecretmanager
+package gsm
 
 import (
 	"context"
