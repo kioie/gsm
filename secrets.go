@@ -35,6 +35,20 @@ import (
 	pb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 )
 
+// SecretClient to interface into the smc Client
+type SecretClient interface {
+	AccessSecretVersion(ctx context.Context, req *pb.AccessSecretVersionRequest) (*pb.AccessSecretVersionResponse, error)
+	DestroySecretVersion(ctx context.Context, req *pb.DestroySecretVersionRequest) (*pb.SecretVersion, error)
+	CreateSecret(ctx context.Context, req *pb.CreateSecretRequest) (*pb.Secret, error)
+	AddSecretVersion(ctx context.Context, req *pb.AddSecretVersionRequest) (*pb.SecretVersion, error)
+	DeleteSecret(ctx context.Context, req *pb.DeleteSecretRequest) error
+	GetSecret(ctx context.Context, req *pb.GetSecretRequest) (*pb.Secret, error)
+	GetSecretVersion(ctx context.Context, req *pb.GetSecretVersionRequest) (*pb.SecretVersion, error)
+	DisableSecretVersion(ctx context.Context, req *pb.DisableSecretVersionRequest) (*pb.SecretVersion, error)
+	EnableSecretVersion(ctx context.Context, req *pb.EnableSecretVersionRequest) (*pb.SecretVersion, error)
+	Close() error
+}
+
 // Client is a global exported Client struct
 type Client struct {
 	smc SecretClient
