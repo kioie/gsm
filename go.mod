@@ -1,4 +1,4 @@
-module github.com/apache/gsm
+module github.com/kioie/gcp-secret-manager
 
 go 1.13
 
